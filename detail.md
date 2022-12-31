@@ -31,6 +31,7 @@ Return the value `cube1.collision_single_side(cube2) && cube1.collision_single_s
 If two cubes have transformation matrix $T_{1}$ $T_{2}$, with their inverse $R_{1}$ $R_{2}$. We set $P_{1} = R_{1} \cdot T_{2} $
 
 let
+
 $$
 P_{1} = \begin{pmatrix}
 p_{00} & p_{01} & p_{02} & p_{03} \\
@@ -46,16 +47,35 @@ So, the second cube has the coordinates $ P_{1} \cdot (\pm 1, \pm 1, \pm 1, 1)^{
 To test if x coordinates are all larger than 1 or smaller than -1. Clearly, the largest x coordinates is $X_{\max} = p_{03} + |p_{00}| + |p_{01}| + |p_{02}|$, and smallest coordinates is  $X_{\min} = p_{03} - |p_{00}| - |p_{01}| - |p_{02}|$.
 
 We need to test
+
+
+
 $$
-X_{\max} +1 <0  \ \ \ \ \text{or} \\ 
+X_{\max} +1 <0  \ \ \ \ \text{or} 
+$$
+
+$$
 X_{\min} -1 >0
-$$,
-which is equivalent to
 $$
-|p_{00}| + |p_{01}| + |p_{02}| + 1 + p_{03} <0 \ \ \text{or} \\
+
+
+which is equivalent to
+
+
+
+$$
+|p_{00}| + |p_{01}| + |p_{02}| + 1 + p_{03} <0 \ \ \text{or} 
+$$
+
+$$
 |p_{00}| + |p_{01}| + |p_{02}| + 1 - p_{03} <0
 $$
+
+
 which is equivalent to
+
+
+
 $$
 |p_{00}| + |p_{01}| + |p_{02}| + 1 - |p_{03}| < 0 
 $$
@@ -84,55 +104,61 @@ So, the edges after transformation $P$ are $P \cdot (1,0,0)$ ,$P \cdot (0,1,0)$ 
 + For the first edge, which is $P \cdot (1,0,0)$,
     + In xy plane, the projected edge is $(p_{00}, p_{10})$, its normal is $-(p_{10}, p_{00})$.
     + We project all 4 vertices from the first cube, which has the value $\pm 1 \cdot p_{00} \pm 1 \cdot p_{10}$. Clearly the value is in the range $[-| p_{00}|-| p_{10}|, | p_{00}|+| p_{10}|]$ 
-    + We project all 8 vertices from the second cube, which has the value $p_{00}\cdot ( \pm p_{11} \pm p_{12} ) + p_{10} *(\pm p_{01} \pm p_{02}) + p_{00}\cdot p_{13} - p_{10}\cdot p_{13} $ (4 unique values)
-    + The value is in the range $[p_{00}\cdot p_{13} - p_{10}\cdot p_{13} - |p_{00}|\cdot ( |p_{11}| + |p_{12}| ) - | p_{10}| \cdot( |p_{01}| + |p_{02}|) ,p_{00}\cdot p_{13} - p_{10}\cdot p_{13} + |p_{00} | \cdot ( |p_{11}| + |p_{12}|)  + | p_{10}| \cdot( |p_{01}| + |p_{02}|)  ]$
+    + We project all 8 vertices from the second cube, which has the value $p_{00}\cdot ( \pm p_{11} \pm p_{12} ) + p_{10} *(\pm p_{01} \pm p_{02}) + p_{00}\cdot p_{13} - p_{10}\cdot p_{13}$ (4 unique values)
+    + The value is in the range $[p_{00}\cdot p_{13} - p_{10}\cdot p_{13} - |p_{00}|\cdot ( |p_{11}| + |p_{12}| ) - | p_{10}| \cdot( |p_{01}| + |p_{02}|) ,p_{00}\cdot p_{13} - p_{10}\cdot p_{13} + |p_{00} | \cdot ( |p_{11}| + |p_{12}|)  + | p_{10}| \cdot( |p_{01}| + |p_{02}|) ]$
     + So we need to test the if 
-    $$
-    | p_{00}|+| p_{10}| < p_{00}\cdot p_{13} - p_{10}\cdot p_{13} - |p_{00}|\cdot ( | p_{11} |+ |p_{12}|) - | p_{10} \cdot( |p_{01} |+ |p_{02}|) \ \ \  \text{or} \\
-    -| p_{00}|-| p_{10}| > p_{00}\cdot p_{13} - p_{10}\cdot p_{13} + |p_{00}|\cdot ( |p_{11}| + |p_{12} |) + | p_{10} |\cdot( |p_{01} |+ |p_{02}|)
-    $$, 
-    + which is equivalent to
-    $$
 
-    |p_{00}|\cdot ( |p_{11}| + |p_{12}|) + | p_{10}| \cdot( |p_{01}| + |p_{02}|)  + |p_{00}| + |p_{10}| - | p_{00}\cdot p_{13} + p_{10}\cdot p_{03}| <0
-    $$
+$$
+| p_{00}|+| p_{10}| < p_{00}\cdot p_{13} - p_{10}\cdot p_{13} - |p_{00}|\cdot ( | p_{11} |+ |p_{12}|) - | p_{10} \cdot( |p_{01} |+ |p_{02}|) \ \ \ \text{or}
+$$
 
-    We can have the similar equation for yz, xz plane, and put it into one register.
+$$
+-| p_{00}|-| p_{10}| > p_{00}\cdot p_{13} - p_{10}\cdot p_{13} + |p_{00}|\cdot ( |p_{11}| + |p_{12} |) + | p_{10} |\cdot( |p_{01} |+ |p_{02}|)
+$$
+    
+which is equivalent to
 
-    To compute $| p_{00}|+| p_{10}|$, we can do this by add `col0` and `col1shuffle`, where $\text{col1shuffle} = (p_{10}, p_{20},p_{00},p_{30})^T $. So we can compute $| p_{00}|+| p_{10}|$, $| p_{10}|+| p_{20}|$, $| p_{20}+| p_{00}|$ altogether. For other part, we can use the same shuffle.
+$$
+|p_{00}|\cdot ( |p_{11}| + |p_{12}|) + | p_{10}| \cdot( |p_{01}| + |p_{02}|)  + |p_{00}| + |p_{10}| - | p_{00}\cdot p_{13} + p_{10}\cdot p_{03}| <0
+$$
 
 
-    ```cpp
-    const vec4 abscol0shuffle = _mm_permute_ps(abscol0.data, 0b11010010); // shuffle the absolute value of the first column 
-    const vec4 abscol1shuffle = _mm_permute_ps(abscol1.data, 0b11010010); // shuffle the absolute value of the second column 
-    const vec4 abscol2shuffle = _mm_permute_ps(abscol2.data, 0b11010010); // shuffle the absolute value of the third column 
+We can have the similar equation for yz, xz plane, and put it into one register.
 
-    const vec4 col0shuffle = _mm_permute_ps(transpose.row0.data, 0b11010010); // shuffle the value of the first column ! not absolute value
-    const vec4 col1shuffle = _mm_permute_ps(transpose.row1.data, 0b11010010); // shuffle the value of the second column ! not absolute value
-    const vec4 col2shuffle = _mm_permute_ps(transpose.row2.data, 0b11010010); // shuffle the value of the third column ! not absolute value
-    const vec4 col3shuffle = _mm_permute_ps(transpose.row3.data, 0b11010010); // shuffle the value of the fourth column ! not absolute value
+To compute $| p_{00}|+| p_{10}|$, we can do this by add `col0` and `col1shuffle`, where $\text{col1shuffle} = (p_{10}, p_{20},p_{00},p_{30})^T $. So we can compute $| p_{00}|+| p_{10}|$, $| p_{10}|+| p_{20}|$, $| p_{20}+| p_{00}|$ altogether. For other part, we can use the same shuffle.
 
-    const vec4 threshold = abscol0 + abscol0shuffle; // first element is |p00|+|p10|
 
-    const vec4 range11 = _mm_add_ps(_mm_mul_ps(abscol0.data, abscol1shufle.data), _mm_mul_ps(abscol0shuffle.data, abscol1.data)); // first element is |p_{00}| * |p_{11}| + |p_{10}| * |p_{01}|
-    const vec4 range12 = _mm_add_ps(_mm_mul_ps(abscol0.data, abscol2shufle.data), _mm_mul_ps(abscol0shuffle.data, abscol2.data)); // first element is  |p_{00}| * |p_{12}| + |p_{10}| * |p_{02}| 
-    const vec4 range1 = range11 + range12;
-    const vec4 center = _mm_sub_ps(_mm_mul_ps(transpose.row0.data, col3shufle.data), _mm_mul_ps(col0shuffle.data, transpose.row3.data)); // first element is  p_{00} * p_{13} - p_{10} * p_{03} 
-    const vec4 abscenter = _mm_and_ps(absfourmask, center.data);
-    const vec4 test = threshold + range1 - abscenter;
+```cpp
+const vec4 abscol0shuffle = _mm_permute_ps(abscol0.data, 0b11010010); // shuffle the absolute value of the first column 
+const vec4 abscol1shuffle = _mm_permute_ps(abscol1.data, 0b11010010); // shuffle the absolute value of the second column 
+const vec4 abscol2shuffle = _mm_permute_ps(abscol2.data, 0b11010010); // shuffle the absolute value of the third column 
 
-    if (test.HasOneNegative()) // if in any of xy, xz, yz plane, value is smaller than 0, there exist a separating axis 
-        return false;
-    ```
+const vec4 col0shuffle = _mm_permute_ps(transpose.row0.data, 0b11010010); // shuffle the value of the first column ! not absolute value
+const vec4 col1shuffle = _mm_permute_ps(transpose.row1.data, 0b11010010); // shuffle the value of the second column ! not absolute value
+const vec4 col2shuffle = _mm_permute_ps(transpose.row2.data, 0b11010010); // shuffle the value of the third column ! not absolute value
+const vec4 col3shuffle = _mm_permute_ps(transpose.row3.data, 0b11010010); // shuffle the value of the fourth column ! not absolute value
+
+const vec4 threshold = abscol0 + abscol0shuffle; // first element is |p00|+|p10|
+
+const vec4 range11 = _mm_add_ps(_mm_mul_ps(abscol0.data, abscol1shufle.data), _mm_mul_ps(abscol0shuffle.data, abscol1.data)); // first element is |p_{00}| * |p_{11}| + |p_{10}| * |p_{01}|
+const vec4 range12 = _mm_add_ps(_mm_mul_ps(abscol0.data, abscol2shufle.data), _mm_mul_ps(abscol0shuffle.data, abscol2.data)); // first element is |p_{00}| * |p_{12}| + |p_{10}| * |p_{02}| 
+const vec4 range1 = range11 + range12;
+const vec4 center = _mm_sub_ps(_mm_mul_ps(transpose.row0.data, col3shufle.data), _mm_mul_ps(col0shuffle.data, transpose.row3.data)); // first element is  p_{00} * p_{13} - p_{10} * p_{03} 
+const vec4 abscenter = _mm_and_ps(absfourmask, center.data);
+const vec4 test = threshold + range1 - abscenter;
+
+if (test.HasOneNegative()) // if in any of xy, xz, yz plane, value is smaller than 0, there exist a separating axis 
+    return false;
+```
 
 
 Then we apply the same computation to the second and third edge, which is the second and the third column of matrix $P$.
 
 
     
- 
-
-
-
 # Others
 1. It maybe can even optimized more, such as using column major matrix, so there is no need to call `transform.Transpose()`. Or some other micro optimizations. But I am not going to do that.
+
+
+
+
