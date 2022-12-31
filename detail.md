@@ -99,7 +99,7 @@ if (test.HasOneNegative())
 
 In default cube, it can only have 3 unique edge directions (1,0,0) (0,1,0) (0,0,1).
 
-So, the edges after transformation $P$ are $P \cdot (1,0,0)$ ,$P \cdot (0,1,0)$ ,$P \cdot (0,0,1)$, which are the first, second, third column of matrix $P$.
+So, the edges after transformation $P$ are $P \cdot (1,0,0)$ , $P \cdot (0,1,0)$ , $P \cdot (0,0,1)$, which are the first, second, third column of matrix $P$.
 
 + For the first edge, which is $P \cdot (1,0,0)$,
     + In xy plane, the projected edge is $(p_{00}, p_{10})$, its normal is $-(p_{10}, p_{00})$.
