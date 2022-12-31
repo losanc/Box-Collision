@@ -2,10 +2,12 @@
 
 SIMD optimized box box collision detection.
 
-A default cube is located at origin, has xyz coordinates (±1, ±1, ±1). All 3d cubes can be considered as some transformation applied to a default cube. 
+A default cube is located at origin, has xyz coordinates (±1, ±1, ±1). All 3d cubes can be considered as some transformation applied to the default cube. 
 In particular, scale on xyz axis first, then rotate, then translation.
 
-This code is a fast way to test if 2 cubes has collision 
+This code is a fast way to test if 2 cubes has collision.
+
+See [here](detail.md) for the explanation.
 
 ## How to use it
 
@@ -25,6 +27,9 @@ void test(){
   bool collision = c1.Collision(c2); // return true if collision, false no collision
 }
 ```
+## How to verify the result
+
+To verify the result, you can use [Blender](https://www.blender.org/). When you open Blender, it will create a default cube automatically. On the right side of screen, there is a `Transform` panel, you can set `Location`, `Rotation`, `Scale`. Remember to change `Rotation Mode` to `Quaternion`. Then you can create another cube, set its property. Then see if they have collision. 
 
 ## Others
 1. Matrix inverse is not optimized yet.

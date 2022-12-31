@@ -14,14 +14,14 @@ static const __m128 absfourmask = _mm_set_ps1(absmask);
 
 struct vec4 {
 	__m128 data;
-	vec4() : data(_mm_setzero_ps()){}
+	vec4() : data(_mm_setzero_ps()) {}
 	vec4(float a, float b, float c, float d) : data(_mm_set_ps(d, c, b, a)) {}
 	vec4(const __m128& d) : data(d) {}
 	vec4(const vec4& rhs) : data(rhs.data) {}
 
 
 	template<int i>
-	inline float index() const{
+	inline float index() const {
 		int res = _mm_extract_ps(data, i);
 		return *reinterpret_cast<float*>(&res);
 	}
@@ -32,7 +32,7 @@ struct vec4 {
 	inline friend vec4 operator*(const vec4& lhs, const float a) { return _mm_mul_ps(lhs.data, _mm_set1_ps(a)); }
 	inline friend vec4 operator/(const vec4& lhs, const float a) { return _mm_div_ps(lhs.data, _mm_set1_ps(a)); }
 
-	inline bool HasOneNegative() const {return !( _mm_testz_ps(data, data));}
+	inline bool HasOneNegative() const { return !(_mm_testz_ps(data, data)); }
 
 	// from https://stackoverflow.com/a/35270026
 	inline float dot(const vec4& rhs) const {
@@ -51,7 +51,7 @@ struct vec4 {
 		return _mm_mul_ps(data, product);
 	}
 	inline void print() const {
-		std::cout << index<0>() << "  " << index<1>() << "  " << index<2>() << "  " << index<3>() << "  "<<std::endl;
+		std::cout << index<0>() << "  " << index<1>() << "  " << index<2>() << "  " << index<3>() << "  " << std::endl;
 	}
 };
 
@@ -79,7 +79,7 @@ struct mat4 {
 		_MM_TRANSPOSE4_PS(copy.row0.data, copy.row1.data, copy.row2.data, copy.row3.data);
 		return copy;
 	}
-	static inline mat4 Scale(float x,float y,float z){
+	static inline mat4 Scale(float x, float y, float z) {
 		vec4 row1(x, 0.f, 0.f, 0.f);
 		vec4 row2(0.f, y, 0.f, 0.f);
 		vec4 row3(0.f, 0.f, z, 0.f);
@@ -126,7 +126,7 @@ struct mat4 {
 
 
 
-// from https://lxjk.github.io/2017/09/03/Fast-4x4-Matrix-Inverse-with-SSE-SIMD-Explained.html
+	// from https://lxjk.github.io/2017/09/03/Fast-4x4-Matrix-Inverse-with-SSE-SIMD-Explained.html
 #define MakeShuffleMask(x,y,z,w)           (x | (y<<2) | (z<<4) | (w<<6))
 
 // vec(0, 1, 2, 3) -> (vec[x], vec[y], vec[z], vec[w])
@@ -181,29 +181,29 @@ struct mat4 {
 
 		//return r;
 
-		const float A2323 = index<2,2>() * index<3,3>() - index<2,3>() * index<3,2>();
-		const float A1323 = index<2,1>() * index<3,3>() - index<2,3>() * index<3,2>();
-		const float A1223 = index<2,1>() * index<3,2>() - index<2,2>() * index<3,2>();
-		const float A0323 = index<2,0>() * index<3,3>() - index<2,3>() * index<3,0>();
-		const float A0223 = index<2,0>() * index<3,2>() - index<2,2>() * index<3,0>();
-		const float A0123 = index<2,0>() * index<3,2>() - index<2,1>() * index<3,0>();
-		const float A2313 = index<1,2>() * index<3,3>() - index<1,3>() * index<3,2>();
-		const float A1313 = index<1,1>() * index<3,3>() - index<1,3>() * index<3,2>();
-		const float A1213 = index<1,1>() * index<3,2>() - index<1,2>() * index<3,2>();
-		const float A2312 = index<1,2>() * index<2,3>() - index<1,3>() * index<2,2>();
-		const float A1312 = index<1,1>() * index<2,3>() - index<1,3>() * index<2,1>();
-		const float A1212 = index<1,1>() * index<2,2>() - index<1,2>() * index<2,1>();
-		const float A0313 = index<1,0>() * index<3,3>() - index<1,3>() * index<3,0>();
-		const float A0213 = index<1,0>() * index<3,2>() - index<1,2>() * index<3,0>();
-		const float A0312 = index<1,0>() * index<2,3>() - index<1,3>() * index<2,0>();
-		const float A0212 = index<1,0>() * index<2,2>() - index<1,2>() * index<2,0>();
-		const float A0113 = index<1,0>() * index<3,2>() - index<1,1>() * index<3,0>();
-		const float A0112 = index<1,0>() * index<2,1>() - index<1,1>() * index<2,0>();
+		const float A2323 = index<2, 2>() * index<3, 3>() - index<2, 3>() * index<3, 2>();
+		const float A1323 = index<2, 1>() * index<3, 3>() - index<2, 3>() * index<3, 2>();
+		const float A1223 = index<2, 1>() * index<3, 2>() - index<2, 2>() * index<3, 2>();
+		const float A0323 = index<2, 0>() * index<3, 3>() - index<2, 3>() * index<3, 0>();
+		const float A0223 = index<2, 0>() * index<3, 2>() - index<2, 2>() * index<3, 0>();
+		const float A0123 = index<2, 0>() * index<3, 2>() - index<2, 1>() * index<3, 0>();
+		const float A2313 = index<1, 2>() * index<3, 3>() - index<1, 3>() * index<3, 2>();
+		const float A1313 = index<1, 1>() * index<3, 3>() - index<1, 3>() * index<3, 2>();
+		const float A1213 = index<1, 1>() * index<3, 2>() - index<1, 2>() * index<3, 2>();
+		const float A2312 = index<1, 2>() * index<2, 3>() - index<1, 3>() * index<2, 2>();
+		const float A1312 = index<1, 1>() * index<2, 3>() - index<1, 3>() * index<2, 1>();
+		const float A1212 = index<1, 1>() * index<2, 2>() - index<1, 2>() * index<2, 1>();
+		const float A0313 = index<1, 0>() * index<3, 3>() - index<1, 3>() * index<3, 0>();
+		const float A0213 = index<1, 0>() * index<3, 2>() - index<1, 2>() * index<3, 0>();
+		const float A0312 = index<1, 0>() * index<2, 3>() - index<1, 3>() * index<2, 0>();
+		const float A0212 = index<1, 0>() * index<2, 2>() - index<1, 2>() * index<2, 0>();
+		const float A0113 = index<1, 0>() * index<3, 2>() - index<1, 1>() * index<3, 0>();
+		const float A0112 = index<1, 0>() * index<2, 1>() - index<1, 1>() * index<2, 0>();
 
-		float det = index<0,0>() * (index<1,1>() * A2323 - index<1,2>() * A1323 + index<1,3>() * A1223)
-			- index<0,1>() * (index<1,0>() * A2323 - index<1,2>() * A0323 + index<1,3>() * A0223)
-			+ index<0,2>() * (index<1,0>() * A1323 - index<1,1>() * A0323 + index<1,3>() * A0123)
-			- index<0,3>() * (index<1,0>() * A1223 - index<1,1>() * A0223 + index<1,2>() * A0123);
+		float det = index<0, 0>() * (index<1, 1>() * A2323 - index<1, 2>() * A1323 + index<1, 3>() * A1223)
+			- index<0, 1>() * (index<1, 0>() * A2323 - index<1, 2>() * A0323 + index<1, 3>() * A0223)
+			+ index<0, 2>() * (index<1, 0>() * A1323 - index<1, 1>() * A0323 + index<1, 3>() * A0123)
+			- index<0, 3>() * (index<1, 0>() * A1223 - index<1, 1>() * A0223 + index<1, 2>() * A0123);
 		det = 1.0f / det;
 
 		return mat4(
